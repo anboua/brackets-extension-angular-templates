@@ -1,0 +1,21 @@
+{
+    "name": "brackets-angular-templates",
+    "title": "Angular Templates",
+    "description": "A pre-made list of Angular.js JavaScript and HTML templates.",
+    "homepage": "https://github.com/dmcissokho/brackets-angular-templates",
+    "version": "1.0.0",
+    "author": "Dan Mady Cissokho",
+    "i18n": [
+        "en",
+        "it",
+        "es",
+        "de",
+        "fr"
+    ],
+    "engines": {
+        "brackets": ">=1.0.0"
+    },
+    "package-i18n": {
+
+    }
+}

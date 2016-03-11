@@ -36,7 +36,7 @@ define(function (require, exports, module) {
 
         // result of clicking a template choice
         // selector is very specific to avoid cross-extension contamination, just in case
-        $('#templates_modal select#standard, #templates_modal select#frameworks').on('change', function () {
+        $('#templates_modal select#js, #templates_modal select#html').on('change', function () {
             // send the chosen template
             chosenTemplate($(this).val());
         });

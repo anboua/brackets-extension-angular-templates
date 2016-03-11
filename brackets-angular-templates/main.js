@@ -1,96 +1,316 @@
-require.config({
-    paths: {
-        "text": "lib/text",
-        "i18n": "lib/i18n"
-    },
-    locale: brackets.getLocale()
-});
+/*
 
+The MIT License (MIT)
+
+Copyright (c) 2016 dmcissokho.fr
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
 define(function (require, exports, module) {
 
     'use strict';
 
     var CommandManager = brackets.getModule('command/CommandManager'),
         EditorManager = brackets.getModule('editor/EditorManager'),
-        Menus = brackets.getModule('command/Menus'),
-        Dialogs = brackets.getModule('widgets/Dialogs');
+        Menus = brackets.getModule('command/Menus');
 
-    // load up modal content, don't forget text! at beginning of file name
-    var modal = require('text!html/modal.html');
-    var Strings = require('strings');
 
-    function action() {
-
-        Dialogs.showModalDialogUsingTemplate(Mustache.render(modal, Strings));
-
-        var editor = EditorManager.getCurrentFullEditor();
-        if (editor) {
-            if (editor._codeMirror.getValue().length > 0) {
-                // file has content, show warning
-                $('#templates_warning').show();
-            }
-        } else {
-            // no file is open, show error
-            $('#templates_error').show();
+    function fixIndent(editor, spaces) {
+        for (var i = 0; i < spaces; i++) {
+            editor.document.replaceRange(' ', editor.getCursorPos());
         }
-
-        // result of clicking a template choice
-        // selector is very specific to avoid cross-extension contamination, just in case
-        $('#templates_modal select#js, #templates_modal select#html').on('change', function () {
-            // send the chosen template
-            chosenTemplate($(this).val());
-        });
-
-        var chosenTemplate = function (choice) {
-            // grab the html to be inserted into file
-            var template;
-            switch (choice) {
-                // html
-            case 'index':
-                template = require('text!templates/html/index.html');
-                break;
-                // js
-            case 'app':
-                template = require('templates/js/app');
-                break;
-            case 'filter':
-                template = require('templates/js/filter');
-                break;
-            case 'service':
-                template = require('templates/js/service');
-                break;
-            case 'factory':
-                template = require('templates/js/factory');
-                break;
-            case 'provider':
-                template = require('templates/js/provider');
-                break;
-            case 'directiveA':
-                template = require('templates/js/directiveAttribut');
-                break;
-            case 'directiveE':
-                template = require('templates/js/directiveElement');
-                break;
-            case 'controller':
-                template = require('templates/js/controller');
-                break;
-            default:
-                template = 'Erreur de route.';
-            }
-
-            // insert html into file, this will overwrite whatever content happens to be there already
-            EditorManager.getCurrentFullEditor()._codeMirror.setValue(template);
-
-            // automatically close the modal window
-            $('#templates_modalBtn').click();
-        };
-
+    }
+    function handleJavaScriptFilter() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp.filters\')\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('.filter(\'filterName\',\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('return function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('};\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange(' });\n', editor.getCursorPos());
+        }
     }
 
-    // Register the commands and insert in the File menu
-    CommandManager.register(Strings.MENU_COMMAND, 'templates', action);
-    var menu = Menus.getMenu(Menus.AppMenuBar.EDIT_MENU);
+    function handleJavaScriptService() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp.services\')\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('.filter(\'serviceName\',[\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('return function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('};\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange(' }]);\n', editor.getCursorPos());
+        }
+    }
+
+    function handleJavaScriptProvider() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp.providers\')\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('.filter(\'providerName\',[\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('return function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('};\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange(' }]);\n', editor.getCursorPos());
+        }
+    }
+
+    function handleJavaScriptController() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp.controllers\')\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('.filter(\'controllerName\',[\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('return function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('};\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange(' }]);\n', editor.getCursorPos());
+        }
+    }
+
+    function handleJavaScriptDirectiveE() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp.directives\')\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('.filter(\'directiveName\',[\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('return{\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('restrict: \'E\',\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('templateUrl:\'path/to/the/template.html\',\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange(' link: function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('}\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('};\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange(' }]);\n', editor.getCursorPos());
+        }
+    }
+
+    function handleJavaScriptDirectiveA() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp.directives\')\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('.filter(\'directiveName\',[\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('return{\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('restrict: \'A\',\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange(' link: function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 16);
+            editor.document.replaceRange('}\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 12);
+            editor.document.replaceRange('};\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange(' }]);\n', editor.getCursorPos());
+        }
+    }
+
+    function handleJavaScriptApp() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.module(\'MyApp\', [\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('\'MyApp.controllers\'\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('\'MyApp.directives\'\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('\'MyApp.providers\'\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('\'MyApp.services\'\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('\'MyApp.filters\'\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(']).config([\n',editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('}\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(']).factory([\n',editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('}\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(']).run([\n',editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('function () {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('\'use strict\';\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('}\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(']);\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange('angular.module(\'MyApp.controllers\', []);\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange('angular.module(\'MyApp.services\', []);\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange('angular.module(\'MyApp.providers\', []);\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange('angular.module(\'MyApp.directives\', []);\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange('angular.module(\'MyApp.filters\', []);\n', editor.getCursorPos());
+        }
+    }
+
+    function handleHTMLIndex() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('<html lang="en" ng-app="MyApp" class="no-js">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('<head>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<base href="/">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<meta charset="utf-8">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<title></title>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<meta name="description" content="">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<meta name="viewport" content="">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<meta name="robots" content="">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<link rel="stylesheet" type="text/css" href="">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<link rel="shortcut icon" href="">\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('</head>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('<body>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<div ng-view></div>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<script src="path/to/app/app.js"></script>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 8);
+            editor.document.replaceRange('<script src="path/to/angular/angular.js"></script>\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('</body>\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange('</html>\n', editor.getCursorPos());
+        }
+    }
+
+
+    var templateJavaScriptFilter = "write.javaScriptFilter";
+    var templateJavaScriptService = "write.javaScriptService";
+    var templateJavaScriptProvider = "write.javaScriptProvider";
+    var templateJavaScriptController = "write.javaScriptController";
+    var templateJavaScriptDirectiveA = "write.javaScriptDirectiveA";
+    var templateJavaScriptDirectiveE = "write.javaScriptDirectiveE";
+    var templateJavaScriptApp = "write.javaScriptApp";
+    var templateHTMLIndex = "write.htmlIndex";
+
+    CommandManager.register("Templates JS Filter", templateJavaScriptFilter, handleJavaScriptFilter);
+    CommandManager.register("Templates JS Service", templateJavaScriptService, handleJavaScriptService);
+    CommandManager.register("Templates JS Provider", templateJavaScriptProvider, handleJavaScriptProvider);
+    CommandManager.register("Templates JS Controller", templateJavaScriptController, handleJavaScriptController);
+    CommandManager.register("Templates JS Directive Attribut", templateJavaScriptDirectiveA, handleJavaScriptDirectiveA);
+    CommandManager.register("Templates JS Directive Element", templateJavaScriptDirectiveE, handleJavaScriptDirectiveE);
+    CommandManager.register("Templates JS App.js", templateJavaScriptApp, handleJavaScriptApp);
+    CommandManager.register("Templates HTML Index", templateHTMLIndex, handleHTMLIndex);
+
+    var menu = Menus.addMenu("Angular Templates", "BracketsAngularTemplates.custom.menu");
+    menu.addMenuItem(templateJavaScriptApp);
+    menu.addMenuItem(templateJavaScriptFilter);
+    menu.addMenuItem(templateJavaScriptProvider);
+    menu.addMenuItem(templateJavaScriptDirectiveA);
+    menu.addMenuItem(templateJavaScriptDirectiveE);
+    menu.addMenuItem(templateJavaScriptService);
+    menu.addMenuItem(templateJavaScriptController);
     menu.addMenuDivider();
-    menu.addMenuItem('templates');
+    menu.addMenuItem(templateHTMLIndex);
 
 });

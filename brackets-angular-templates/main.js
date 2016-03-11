@@ -51,28 +51,28 @@ define(function (require, exports, module) {
                 break;
                 // js
             case 'app':
-                template = require('templates/js/app.js');
+                template = require('templates/js/app');
                 break;
             case 'filter':
-                template = require('templates/js/filter.js');
+                template = require('templates/js/filter');
                 break;
             case 'service':
-                template = require('templates/js/service.js');
+                template = require('templates/js/service');
                 break;
             case 'factory':
-                template = require('templates/js/factory.js');
+                template = require('templates/js/factory');
                 break;
             case 'provider':
-                template = require('templates/js/provider.js');
+                template = require('templates/js/provider');
                 break;
             case 'directiveA':
-                template = require('templates/js/directiveAttribut.js');
+                template = require('templates/js/directiveAttribut');
                 break;
             case 'directiveE':
-                template = require('templates/js/directiveElement.js');
+                template = require('templates/js/directiveElement');
                 break;
             case 'controller':
-                template = require('templates/js/controller.js');
+                template = require('templates/js/controller');
                 break;
             default:
                 template = 'Erreur de route.';

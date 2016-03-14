@@ -282,6 +282,39 @@ define(function (require, exports, module) {
             editor.document.replaceRange('</html>\n', editor.getCursorPos());
         }
     }
+    function handleScopeWatcher() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange(' $scope.$watch(\'contents\', function (newValue) { \n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(' });\n', editor.getCursorPos());
+        }
+    }
+    function handleScopeListene() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('$scope.$on(\'name\', function(event, data) {\n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(' });\n', editor.getCursorPos());
+        }
+    }
+    function handleBind() {
+        var editor = EditorManager.getFocusedEditor();
+        if (editor) {
+            var spaces = editor.getColOffset(editor.getCursorPos());
+            editor.document.replaceRange('angular.element($window).bind(\'name\', function (event) { \n', editor.getCursorPos());
+            fixIndent(editor, spaces + 4);
+            editor.document.replaceRange('/*your code */\n', editor.getCursorPos());
+            fixIndent(editor, spaces);
+            editor.document.replaceRange(' });\n', editor.getCursorPos());
+        }
+    }
 
 
     var templateJavaScriptFilter = "write.javaScriptFilter";
@@ -291,6 +324,9 @@ define(function (require, exports, module) {
     var templateJavaScriptDirectiveA = "write.javaScriptDirectiveA";
     var templateJavaScriptDirectiveE = "write.javaScriptDirectiveE";
     var templateJavaScriptApp = "write.javaScriptApp";
+    var bindEvent = "write.bindEvent";
+    var scopeWatcher = "write.scopeWatcher";
+    var scopeListener = "write.scopeListener";
     var templateHTMLIndex = "write.htmlIndex";
 
     CommandManager.register("Templates JS Filter", templateJavaScriptFilter, handleJavaScriptFilter);
@@ -300,6 +336,9 @@ define(function (require, exports, module) {
     CommandManager.register("Templates JS Directive Attribut", templateJavaScriptDirectiveA, handleJavaScriptDirectiveA);
     CommandManager.register("Templates JS Directive Element", templateJavaScriptDirectiveE, handleJavaScriptDirectiveE);
     CommandManager.register("Templates JS App.js", templateJavaScriptApp, handleJavaScriptApp);
+    CommandManager.register("Templates JS Watcher", scopeWatcher, handleScopeWatcher);
+    CommandManager.register("Templates JS Listener", scopeListener, handleScopeListene);
+    CommandManager.register("Templates JS Bind", bindEvent, handleBind);
     CommandManager.register("Templates HTML Index", templateHTMLIndex, handleHTMLIndex);
 
     var menu = Menus.addMenu("Angular Templates", "BracketsAngularTemplates.custom.menu");
@@ -310,6 +349,11 @@ define(function (require, exports, module) {
     menu.addMenuItem(templateJavaScriptDirectiveE);
     menu.addMenuItem(templateJavaScriptService);
     menu.addMenuItem(templateJavaScriptController);
+    menu.addMenuDivider();
+    menu.addMenuItem(bindEvent);
+    menu.addMenuItem(scopeWatcher);
+    menu.addMenuItem(scopeListener);
+
     menu.addMenuDivider();
     menu.addMenuItem(templateHTMLIndex);
 

@@ -345,7 +345,7 @@ define(function (require, exports, module) {
 	CommandManager.register("Snippet JS Bind", bindEvent, handleBind);
 	CommandManager.register("Snippet HTML Index", templateHTMLIndex, handleHTMLIndex);
 
-	var menu = Menus.addMenu("Angular Snippets", "BracketsAngularTemplates.custom.menu");
+	var menu = Menus.addMenu("Angular Snippets Collection", "BracketsAngularTemplates.custom.menu");
 	menu.addMenuItem(templateJavaScriptApp);
 	menu.addMenuItem(templateJavaScriptFilter);
 	menu.addMenuItem(templateJavaScriptProvider);

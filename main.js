@@ -333,17 +333,17 @@ define(function (require, exports, module) {
 	var scopeListener = "write.scopeListener";
 	var templateHTMLIndex = "write.htmlIndex";
 
-	CommandManager.register("Templates JS Filter", templateJavaScriptFilter, handleJavaScriptFilter);
-	CommandManager.register("Templates JS Service", templateJavaScriptService, handleJavaScriptService);
-	CommandManager.register("Templates JS Provider", templateJavaScriptProvider, handleJavaScriptProvider);
-	CommandManager.register("Templates JS Controller", templateJavaScriptController, handleJavaScriptController);
-	CommandManager.register("Templates JS Directive Attribut", templateJavaScriptDirectiveA, handleJavaScriptDirectiveA);
-	CommandManager.register("Templates JS Directive Element", templateJavaScriptDirectiveE, handleJavaScriptDirectiveE);
-	CommandManager.register("Templates JS App.js", templateJavaScriptApp, handleJavaScriptApp);
-	CommandManager.register("Templates JS Watcher", scopeWatcher, handleScopeWatcher);
-	CommandManager.register("Templates JS Listener", scopeListener, handleScopeListene);
-	CommandManager.register("Templates JS Bind", bindEvent, handleBind);
-	CommandManager.register("Templates HTML Index", templateHTMLIndex, handleHTMLIndex);
+	CommandManager.register("Snippet JS Filter", templateJavaScriptFilter, handleJavaScriptFilter);
+	CommandManager.register("Snippet JS Service", templateJavaScriptService, handleJavaScriptService);
+	CommandManager.register("Snippet JS Provider", templateJavaScriptProvider, handleJavaScriptProvider);
+	CommandManager.register("Snippet JS Controller", templateJavaScriptController, handleJavaScriptController);
+	CommandManager.register("Snippet JS Directive Attribut", templateJavaScriptDirectiveA, handleJavaScriptDirectiveA);
+	CommandManager.register("Snippet JS Directive Element", templateJavaScriptDirectiveE, handleJavaScriptDirectiveE);
+	CommandManager.register("Snippet JS App.js", templateJavaScriptApp, handleJavaScriptApp);
+	CommandManager.register("Snippet JS Watcher", scopeWatcher, handleScopeWatcher);
+	CommandManager.register("Snippet JS Listener", scopeListener, handleScopeListene);
+	CommandManager.register("Snippet JS Bind", bindEvent, handleBind);
+	CommandManager.register("Snippet HTML Index", templateHTMLIndex, handleHTMLIndex);
 
 	var menu = Menus.addMenu("Angular Snippets", "BracketsAngularTemplates.custom.menu");
 	menu.addMenuItem(templateJavaScriptApp);
